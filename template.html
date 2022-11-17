@@ -44,6 +44,8 @@ padding: 10px 0px 0px 0px;
 border: 2px solid #FF8C00;
 color:#00003E;
 }
+var today = new Date();
+var date = today. getFullYear()+’-‘+(today. getMonth()+1)+’-‘+today. getDate();
     </style>
 </head>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -62,12 +64,12 @@ color:#00003E;
 <div align="center">
     <label for="start">Start date:</label>
     <input type="date" id="start" name="trip-start"
-           value="2018-07-22"
-           min="2018-01-01" max="2018-12-31">
+           value
+           min="2005-01-01" max>
     <label for="start">End date:</label>
     <input type="date" id="end" name="trip-end"
-           value="2018-07-22"
-           min="2018-01-01" max="2018-12-31">
+           value
+           min="2005-01-01" max>
 </div>
 <h3 style="text-align:center"><span class="glyphicon glyphicon-pencil" style=" color:#FF8C00;"></span> Type the Keywords
     and Subreddits you want to extract data from</h3>

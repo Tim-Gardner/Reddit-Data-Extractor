@@ -20,6 +20,8 @@ app = Flask(__name__)
 parser = argparse.ArgumentParser(description='Enter the input subreddits and keywords text files for data extraction.')
 parser.add_argument('-s', dest='subreddit_file', help='This is the input subreddit text file path.', required=True)
 parser.add_argument('-k', dest='keyword_file', help='This is the input keyword text file path.', required=True)
+parser.add_argument('-f', dest='first_date_file', help='This is the input first date text file path.', required=True)
+parser.add_argument('-e', dest='end_date_file', help='This is the input end date text file path.', required=True)
 args = parser.parse_args()
 
 
@@ -45,6 +47,7 @@ class RedditDataExtractor:
         self.initialize_Reddit(client_id, client_secret)
         self.api = PushshiftAPI()
         self.start_epoch = None
+        self.end_epoch = None
         self.standardized_dict = {
                     # these are the fields that both share
                      'id': '',
@@ -99,7 +102,7 @@ class RedditDataExtractor:
         Ouput: adds subreddits and keywords to instance attributes
 
     '''
-    def get_keywords_and_subreddits(self, subreddit_file, keyword_file):
+    def get_keywords_and_subreddits(self, subreddit_file, keyword_file, first_date_file, end_date_file):
 
         with open(subreddit_file) as f:
             subreddits = f.read().splitlines()
@@ -107,8 +110,16 @@ class RedditDataExtractor:
         with open(keyword_file) as f:
             keywords = f.read().splitlines()
 
+        with open(first_date_file) as f:
+            firstDate = f.read().split(" ")
+
+        with open(end_date_file) as f:
+            endDate = f.read().split(" ")
+
         self.keywords = keywords
         self.subreddits = subreddits
+        self.start_epoch = int(dt.datetime(int(firstDate[0]), int(firstDate[1]), int(firstDate[2])).timestamp())
+        self.end_epoch = int(dt.datetime(int(endDate[0]), int(endDate[1]), int(endDate[2])).timestamp())
 
     def get_keywords_and_subreddits_from_form(self,subreddit_text,keyword_text):
         pass
@@ -140,6 +151,7 @@ class RedditDataExtractor:
 
         gen = self.api.search_submissions(after=self.start_epoch,
                                     subreddit=subreddit,
+                                    before=self.end_epoch,
                                     #limit=1,
                                     #filter=['author', 'author_fullname', 'full_link',
                                             #'id', 'num_comments', 'retrieved_on', 'title'],
@@ -167,6 +179,7 @@ class RedditDataExtractor:
 
         gen = self.api.search_comments(after=self.start_epoch,
                                     subreddit=subreddit,
+                                    before=self.end_epoch,
                                     #limit=1,
                                     #filter=['submission'],
                                     q=query)
